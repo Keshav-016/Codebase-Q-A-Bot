@@ -1,0 +1,16 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: codebase_qna_db
+    environment:
+      POSTGRES_DB: codebase_qna
+      POSTGRES_USER: codebase_user
+      POSTGRES_PASSWORD: codebase_password
+    ports:
+      - '5433:5432'  # host:container — 5432 on the Mac is taken by another project
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
