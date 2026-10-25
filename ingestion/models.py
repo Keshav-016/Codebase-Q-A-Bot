@@ -2,10 +2,15 @@ from django.db import models
 
 # Create your models here.
 STATUS_CHOICES = [
-    'pending',
-    'processing',
-    'ready',
-    'failed'
+
+    ("pending", "Pending"),
+
+    ("processing", "Processing"),
+
+    ("ready", "Ready"),
+
+    ("failed", "Failed"),
+
 ]
 class GitHubIngest(models.Model):
     repo_url = models.URLField()
