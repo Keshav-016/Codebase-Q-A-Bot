@@ -10,22 +10,33 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Read key=value pairs from the .env file into os.environ.
+# Variables already set in the real environment (e.g. on Railway) win.
+load_dotenv(BASE_DIR / ".env")
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3lq-!8k7#)-bd6!^8)^l$lm4x02%v$gh@=05@4k(a$eg^%-ug2'
+# os.environ["X"] (no default) crashes on startup if X is missing, which is
+# what we want for secrets: better to fail loudly than run with a bad value.
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Environment variables are always strings, so compare against "true".
+DEBUG = os.environ.get("DJANGO_DEBUG", "false").lower() == "true"
 
-ALLOWED_HOSTS = []
+# Hostnames this site may be served under, e.g. "localhost,127.0.0.1".
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 # Application definition
@@ -79,19 +90,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     "default": {
-
         "ENGINE": "django.db.backends.postgresql",
-
-        "NAME": "codebase_qna",
-
-        "USER": "codebase_user",
-
-        "PASSWORD": "codebase_password",
-
-        "HOST": "localhost",
-
-        "PORT": "5433",
-
+        "NAME": os.environ["POSTGRES_DB"],
+        "USER": os.environ["POSTGRES_USER"],
+        "PASSWORD": os.environ["POSTGRES_PASSWORD"],
+        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
+        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }
 }
 

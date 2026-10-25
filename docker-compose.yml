@@ -2,13 +2,15 @@ services:
   db:
     image: pgvector/pgvector:pg16
     container_name: codebase_qna_db
+    # Docker Compose automatically reads .env next to this file and
+    # substitutes ${VAR} below, so Django and Postgres share one source of truth.
     environment:
-      POSTGRES_DB: codebase_qna
-      POSTGRES_USER: codebase_user
-      POSTGRES_PASSWORD: codebase_password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - '5433:5432'  # host:container — 5432 on the Mac is taken by another project
-
+      # host:container — 5432 on the Mac is taken by another project
+      - '${POSTGRES_PORT}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
